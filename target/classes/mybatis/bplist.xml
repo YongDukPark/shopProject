@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.bplist">
+<!-- java.lang.IllegalArgumentException: dao의 namespace와 일치시켜야 함! -->
+
+	<!-- sql문 작성하는 곳 -->
+	
+	<!--전체 레코드 개수-->
+	<select id="GetTotalCount" resultType="int">
+		select count(*) from bplist where stock>0 
+		<if test="whatColumn == 'pname'">
+			and pname like #{keyword}
+		</if>	
+	
+		<if test="whatColumn == 'category'">
+			and category like #{keyword}
+		</if>	
+		order by num desc
+	</select>
+	
+	
+	<!--전체 레코드 목록-->
+	<select id="ProductList" resultType="bplist.model.BplistBean">
+		select * from bplist where stock>0 
+		<if test="whatColumn == 'pname'">
+			and pname like #{keyword}
+		</if>	
+	
+		<if test="whatColumn == 'category'">
+			and category like #{keyword}
+		</if>	
+		order by num desc
+	</select>
+	
+	
+	<!-- 선택한 번호의 레코드 한줄만 가져오기: 상세보기, 수정폼 -->
+	<select id="GetProduct" resultType="bplist.model.BplistBean">
+		select * from bplist where num=#{num}
+	</select>
+	
+	
+	<!-- 레코드 삽입하기 -->
+	<insert id="InsertProduct">
+		insert into bplist(num, id, content, img, ip, pname, gender, category, price, stock, poption)
+		values(cmunityseq.nextval, #{id, jdbcType=VARCHAR}, #{content, jdbcType=VARCHAR}, #{img}, #{ip, jdbcType=VARCHAR}, #{pname}, #{gender, jdbcType=VARCHAR}, #{category}, #{price}, #{stock}, #{poption})
+	</insert>
+	
+	
+	<!-- 선택한 번호의 레코드 한줄 삭제하기-->
+	<delete id="DeleteProduct">
+		delete from bplist where num=#{num}
+	</delete>
+	
+	
+	<!-- 선택한 번호의 레코드 한줄 수정하기-->
+	<update id="UpdateProduct">
+		update bplist set 
+		pname=#{pname}, category=#{category}, poption=#{poption}, price=#{price}, stock=#{stock}
+		where num=#{num}
+	</update>
+	
+	
+	
+	<!-- 메인페이지 SQl문 -->
+	
+	<select id="GetMainStock" resultType="bplist.model.BplistBean">
+		select * from bplist 
+		<![CDATA[where stock < 100]]>
+		order by stock
+	</select>
+	
+	<select id="GetMainPrice" resultType="bplist.model.BplistBean">
+		select * from bplist 
+		<![CDATA[where price < 10000]]>
+		order by price
+	</select>
+	
+	<select id="GetMainMen" resultType="bplist.model.BplistBean">
+		select * from bplist 
+		where gender='남자'
+		order by num 
+	</select>
+
+	<select id="GetMainWemen" resultType="bplist.model.BplistBean">
+		select * from bplist 
+		where gender='여자'
+		order by num 
+	</select>
+	
+	<!--상세보기에 해당하는 상품에 대한 댓글 보기   -->
+	<select id="replylist" resultType="bplist.model.BpreplyBean">
+		select * from bpreply where num=#{num} and type='pro' order by replenum		
+	</select>
+	<!--해당 상품의 댓글 작성  -->
+	<insert id="insertreply">
+		insert into bpreply(replenum, num,content,img,id)
+		values(bpreplyseq.nextval, #{num},#{content, jdbcType=VARCHAR},#{img, jdbcType=VARCHAR},#{id})
+	</insert>
+	<!--댓글삭제  -->
+	<delete id="deletereply">
+		delete from bpreply where replenum=#{replenum}
+	</delete>
+	<!--댓글 수정폼  -->
+	<select id="selectreply" resultType="bplist.model.BpreplyBean">
+		select * from bpreply where replenum=#{replenum}
+		<!--댓글수정  -->
+	</select>
+		<update id="updatereply">
+		update bpreply set 
+		content=#{content, jdbcType=VARCHAR},img=#{img, jdbcType=VARCHAR}
+		where replenum=#{replenum}
+	</update>
+	
+	
+</mapper>
+

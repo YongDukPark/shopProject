@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.userlist">
+	
+	<!-- 대련님 -->
+	<select id="GetUserList" resultType="userlist.model.userlistBean_gang">
+		select * from userlist
+		<if test="whatColumn=='name'">where name like #{keyword}</if>
+		<if test="whatColumn=='id'">where id like #{keyword}</if>
+		<if test="whatColumn=='gender'">where gender like #{keyword}</if>
+		order by num
+	</select>
+	<select id="GetTotalCount" resultType="int">
+		select count(*) from userlist
+		<if test="whatColumn=='name'">where name like #{keyword}</if>
+		<if test="whatColumn=='id'">where id like #{keyword}</if>
+		<if test="whatColumn=='gender'">where gender like #{keyword}</if>
+	</select>
+	<select id="GetUser" resultType="userlist.model.userlistBean_gang">
+		select * from userlist where num=#{num}
+	</select>
+	<delete id="DeleteUser">
+		delete from userlist where num=#{num}
+	</delete>
+	
+	<select id="PaymentHistory" resultType="shopbox.model.shopboxBean">
+		select * from shopbox where id=#{id} order by regdate desc
+	</select>
+	
+	
+	<!-- 성찬님 -->
+	<insert id="insertuser">
+		insert into userlist(num,id,pass,name,gender,birth,address1,address2)values (userlistseq.nextval,#{id},#{pass},#{name},#{gender},#{birth},#{address1},#{address2}) 
+	</insert>
+
+	<select id="searchId" resultType="User">
+		select * from userlist where id=#{id} 
+	</select>
+
+	<select id="SearchId" resultType="User">
+		select * from userlist where name=#{name} and birth=#{birth} 
+	</select>
+
+	<select id="SearchPass" resultType="User">
+		select * from userlist where name=#{name} and birth=#{birth} and id=#{id} 
+	</select>
+
+	<update id="updateuser">
+		update userlist set name=#{name}, gender=#{gender}, birth=#{birth},address1=#{address1}, address2=#{address2} where id=#{id} 
+	</update>
+	
+	<delete id="deleteuser">
+		delete from userlist where pass=#{pass} 
+	</delete>
+	
+	
+	
+	
+</mapper>

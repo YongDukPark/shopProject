@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.benlist">
+	
+	<!-- 신고진행 -->
+	<insert id="report">
+		insert into benlist (num,id,reason,bencategory) values 
+		(benlistseq.nextval,#{id},#{reason},#{bencategory})
+	</insert>
+	
+	<!-- report list -->
+	<select id="getBenList" resultType="benlist.model.benlistBean">
+		select * from benlist order by num
+	</select>
+	
+	<!-- num 기반 id찾기 -->
+	<select id="getByUser" resultType="String">
+		select id from benlist where num=#{num}
+	</select>
+	
+	<!-- id benpoint 1 누적 -->
+	<update id="getByReport">
+		update userlist set benpoint=benpoint+1 where id=#{id}	
+	</update>
+	
+	<!-- 신고 삭제 -->
+	<delete id="getByCancel">
+		delete from benlist where num=#{num}
+	</delete>
+	
+	<!-- 상습범List -->
+	<select id="count10up" resultType="userlist.model.userlistBean_gang">
+		select * from userlist where benpoint>9 order by benpoint
+	</select>
+	
+	<!-- user Delete -->
+	<delete id="userDelete">
+		delete from userlist where num=#{num}
+	</delete>
+	
+</mapper>
+

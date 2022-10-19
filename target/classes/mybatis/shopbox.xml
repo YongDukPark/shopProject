@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.shopbox">
+	
+	<!-- 장바구니  -->
+	<update id="shopboxUpdate">
+		update shopbox set stock = #{stock} where num = #{num} and id = #{id}
+	</update>
+	
+	<!-- <select id="" resultType="shopbox.model.shopboxBean">
+		select * from shopbox where gender = #{gender}
+	</select> -->
+	
+	
+	
+	<!-- 여기까지 -->
+	
+	
+	<!-- listorder1 에서상품정보 가져와서 넣기 -->
+	<select id="getCheckList" resultType="shopbox.model.shopboxBean">
+		select * from shopbox where id=#{id} and num=#{num} and status='장바구니'
+	</select>
+	
+	
+	
+	
+	<!-- 상품정보 가져오기 -->
+	<select id="getProduct" resultType="shopbox.model.shopboxBean">
+		select * from bplist where num = #{bpnum}
+	</select>
+	
+	<insert id="singleShopboxInsert">
+		insert into shopbox (num,id,img,regdate,pname,price,status,stock,poption) values 
+		(#{num},#{id},#{img},sysdate,#{pname},#{price},'장바구니',#{stock},#{poption})
+	</insert>
+	
+	<!-- 그거 -->	
+	<select id="getSingleOrder" resultType="shopbox.model.shopboxBean">
+		select * from shopbox where num=#{num} and id=#{id} order by num
+	</select>
+	
+	<!-- orderList보여주기 -->
+	<select id="getListOrder" resultType="shopbox.model.shopboxBean">
+		select * from shopbox where id=#{id} and status='장바구니' order by num
+	</select>
+	
+	<!-- 가격 -->
+	<select id="totalPrice" resultType="int">
+		select price from shopbox where num=#{num} and id=#{id} order by num
+	</select>
+	
+	<!-- 수량 -->
+	<select id="totalStock" resultType="int">
+		select stock from shopbox where num=#{num} and id=#{id} order by num
+	</select>
+	
+	<!-- selectStockCheck1 -->
+	<select id="selectStockCheck1" resultType="int">
+		select stock from bplist where num=#{num}
+	</select>
+	
+	<!-- selectStockCheck2 -->
+	<select id="selectStockCheck2" resultType="int">
+		select stock from shopbox where num=#{num} and id=#{id} order by num
+	</select>
+	
+	<!-- 상품 주문갯수 가져오기 -->
+	<select id="selectBynum" resultType="String">
+		select stock from shopbox where num=#{num} and id=#{id} order by num
+	</select>
+	
+	<!-- 주문시 재고 감소 -->
+	<update id="updateStock">
+		update bplist set stock = stock - #{stock} where num = #{num}
+	</update>
+	
+	<!-- 주문시 장바구니>배송중으로 변경 -->
+	<update id="changeStatus">
+		update shopbox set status = '배송중' where num=#{num} and id=#{id}
+	</update>
+	
+	<!-- 주문시 장바구니 담은시간 > 배송시간으로 변경 -->
+	<update id="changeRegdate">
+		update shopbox set regdate = sysdate where num=#{num} and id=#{id}
+	
+	</update>
+	
+	<!-- totalCount -->
+	<select id="totalCount" resultType="int">
+		select count(*) from shopbox
+		
+			<if test="id != 'admin'">
+				where id = #{id} and status = '배송중'
+			
+				<if test="whatColumn == 'pname'">
+					and pname like #{keyword}
+				</if>
+			</if>
+			
+			<if test="id == 'admin'">
+				<if test="whatColumn=='name'">
+					where pname like #{keyword} and status = '배송중'
+				</if>
+				<if test="whatColumn=='id'">
+					where id like #{keyword} and status = '배송중'
+				</if>
+			</if>
+			
+		order by num
+	</select>
+	
+	<!-- orderList -->
+	<select id="GetProductList" resultType="shopbox.model.shopboxBean">
+		select * from shopbox
+			
+			<if test="id != 'admin'">
+				where id = #{id} and status = '배송중'
+			
+				<if test="whatColumn=='name'">
+					and pname like #{keyword}
+				</if>
+			</if>
+			
+			<if test="id == 'admin'">
+				where status = '배송중'
+				
+				<if test="whatColumn=='pname'">
+					and pname like #{keyword}
+				</if>
+				<if test="whatColumn=='id'">
+					and id like #{keyword}
+				</if>
+			</if>
+			
+		order by regdate desc
+	</select>
+	
+	<!-- 주문취소 -->
+	<delete id="cancleOrder">
+		delete from shopbox where num=#{num} and id=#{id}
+	</delete>
+	
+	<!-- 옵션변경할 상품 -->
+	<select id="productDetail" resultType="shopbox.model.shopboxBean">
+		select * from shopbox where num=#{num} and id=#{id}
+	</select>
+	
+	<!-- 옵션변경 -->
+	<update id="changeOptions">
+		update shopbox set poption=#{poption} where num = #{num} and id = #{id}
+	</update>
+</mapper>

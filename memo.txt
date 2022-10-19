@@ -1,0 +1,299 @@
+
+필요한것들
+
+1. 회원가입
+강성
+
+2. 상품리스트
+정시
+
+3. 장바구니
+김경
+
+4. 주문하기 
+박용덕	
+
+5. 게시판
+강세
+
+6. 회원리스트
+강대
+------------------------여기까지 먼저하기 -------------------------------------------
+
+
+
+
+
+
+7. 벤리스트
+
+
+8. 관리자페이지
+
+
+9. 
+제목 댕겨오는
+주문내역에서 카테랑 옵션 댕겨오기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+table
+
+필요한것들
+
+
+
+
+--0.유저 리스트
+
+drop sequence userlistseq;
+create sequence userlistseq
+  increment by 1
+  start with 1
+  minvalue 1
+  maxvalue 10000
+  nocache;
+
+drop table userlist cascade constraints;
+
+create table userlist(
+num number primary key, 
+id varchar2(30),	--중복확인
+pass varchar2(30),	--비밀번호 확인기능
+name varchar2(52),
+gender varchar2(13),
+birth number not null,
+pnum varchar2(30) not null,
+address1 varchar2(300),
+address2 varchar2(300),
+insertdate date default sysdate,
+benpoint number default 0,
+grade number default 0
+);
+
+
+아이디 , 비밀번호, 성별, 생일, 전화번호, 주소, 
+
+
+
+1. 커뮤니티 글리스트	(출력용, admin이 데이터 확인용 두가지로 이용 + 여기서 상품정보 가져와서 상품리스트에 포함)
+drop sequence communityseq;
+create sequence communityseq
+  increment by 1
+  start with 1
+  minvalue 1
+  maxvalue 10000
+  nocache;
+
+drop table community cascade constraints;
+create table community(
+	num number not null primary key,	--bplist table 에 연결
+	id varchar2(30),
+	pass varchar2(30),
+	content varchar2(3000),
+	img varchar2(300),
+	readcount number default 0,
+	ip varchar2(15) not null,
+	pname varchar2(100),
+	gender varchar2(13),		
+	category varchar2(300),	
+	price number
+);
+
+create table board
+
+
+
+
+
+-- 보류 2.즐겨찾기 커뮤니티
+
+drop table hotpixlist cascade constraints;
+create table hotpixlist(
+	id varchar2(30),	--id 에게 해당한 상품리스트 가져오기 호출 sql 문 	select * from community where num=#{num}
+			--for문 이용해서 select * from hotpixlist where id = '접속자아이디(session값)'
+	num number not null primary key, 	--상품리스트 번호 따오기	이거 기준으로 상품들 다 가져올거임
+	inboxdate date default sysdate
+
+	--루트는 아이디기반으로 num 리스트 가져오고 그 num을 기반으로 상품 리스트 select * from community where num=#{num}
+
+)
+
+--지난번에 배운 select 메뉴고르기 활용  여자,남자,혼성
+--앞에 gender를 선택시 category가 나올수있게
+
+--비어있는 곳은 유효성 검사 실행
+
+
+
+--3.쇼핑몰 등록전 쇼핑몰상품리스트	(Before Product List)
+--상품들 가져오기전 
+
+drop table community cascade constraints;
+create table bplist(
+	num number not null primary key,	--community 연결
+	id varchar2(30),
+	content varchar2(3000),
+	img varchar2(300),
+	ip varchar2(15) not null,
+	pname varchar2(100),
+	gender varchar2(13),	
+	category varchar2(300),
+	price number,
+	display varchar2(10) defalut off,
+	stock number,
+	option varchar2(30)
+)
+
+--여기 상품리스트중 체크해서 승락을 하면 쇼핑몰 상품리스트에 상품 추가 여기는 전체 데이터를 보관하는 용도로 사용
+
+
+5. 장바구니
+
+drop table shopbox cascade constraints;
+create table shopbox(
+	num number,
+	id varchar2(30),
+	img varchar2(300),
+	regdate date default sysdate,
+	status varchar2(30),
+	stock number,
+	option varchar2(30)
+)
+
+
+
+5. 벤리스트
+
+--맘에 안드는놈은 그냥 바로 계정 삭제시켜버리기 	기능 구현	(ex 이전 벤을 당한 경험이 있는친구)
+
+drop table benlist cascade constraints;
+create table benlist(
+	num number primary key,	--글 번호
+	id varchar2(30),
+	reason varchar2(300),
+	count number,
+	bencategory varchar2(30),	--불쾌감을 주는 글, 부적절한 글, 혼란을 주는 글, 목적에 맞지않는글 등등 select 이용
+	coment varchar2(100)	
+)
+
+coment 는 정지당할때 가장 많은 사유를 max having 
+
+※카운트값을 글작성 갯수만큼 하고 max값을 기준으로 보기
+예시값:
+regdate
+SELECT regdate FROM board WHERE num = (select max(num) FROM board where writer='홍길동');
+홍길동이 가져온 값중에 가장 많은값 구하기
+
+SELECT * FROM board WHERE num = (select count(readcount) FROM board where writer='홍길동');
+
+SELECT * FROM board WHERE num = (select count(bencategory ) FROM board where writer='홍길동');
+
+
+ex a가 1번 사유로 10번 칭찬을 받고 2번 사유로 4번 칭찬을 받고 3번사유로 5번 칭찬을 받았을경우 가장 칭찬을 많이 받은 사유를 가져오세요
+1번 착하다
+2번 멋지다
+3번 유별나다
+
+
+SELECT num FROM board WHERE num = (select max(num) FROM board where writer='홍길동');
+COUNT(NUM)
+----------
+         1
+SELECT num FROM board WHERE num = (select count(*) FROM board where writer='홍길동');
+       NUM
+----------
+         3
+
+SELECT max(num)  FROM board WHERE num = (select max(num) FROM board where writer='홍길동');
+
+
+6. 공지사항 (게시판, 답글달기 기능 넣기(재업로드용 or 수정본)) 
+
+drop sequence noticeseq
+create sequence noticeseq
+  increment by 1
+  start with 1
+  minvalue 1
+  maxvalue 10000
+  nocache;
+
+
+drop table notice cascade constraints;
+create table notice(
+	num number primary key,
+	writer varchar2(30),
+	subject varchar2(100),
+	content varchar2(1000) not null,
+	reg_date date default sysdate,
+	readcount number default 0,
+	ref number not null,		--본문글인지
+	restep number not null,	--답글인지
+	relevel number not null	--답글의 답글인지
+)
+
+
+select rownum as rank, num, subject, ref, restep, relevel
+ from (select num, subject, ref, restep, relevel
+ from board
+ order by ref desc, restep asc);
+
+
+
+7. 
+내가등록한 글목록
+내가 작성한 댓글 리스트
+
+즐겨찾기 기능 클릭시 if else 로 나눠서 글 가져오기 
+
+if(bean.getNum()){	
+	
+	sc alert 등록된 글입니다.
+}
+
+else{
+	dao.update 실행
+	
+}
+
+
+
+
+
+
+보류
+
+댓글 별점주기
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

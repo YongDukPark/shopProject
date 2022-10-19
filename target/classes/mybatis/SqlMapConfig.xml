@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!-- SqlMapConfig.xml -->
+
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<!-- 만약 별칭 지정시 해당클래스 무조건 있어야함 그리고 여러개를 넣을수있다. -->
+<!-- mappers 여기서 루트컨텍스트 지정을 해준다. 여러개가 아니고 하나만 써도 여기서 써도된다. 여러개는 무조건이다. -->
+
+<configuration>	
+	<!-- <typeAliases>
+		<typeAlias type="product.model.ProductBean" alias="MyProduct"/>
+		<typeAlias type="member.model.MemberBean" alias="MyMember"/>
+		<typeAlias type="order.model.OrderBean" alias="MyOrder"/>
+	</typeAliases>	 -->							<!-- sql result type에 쓰인다. -->
+	
+	<typeAliases>
+
+		<typeAlias alias="User" type="userlist.model.userlistBean"/>	<!-- 성찬님 -->
+
+	</typeAliases>
+	
+
+	<mappers>
+		<mapper resource="mybatis/bplist.xml"/>
+		<mapper resource="mybatis/cmunity.xml"/>
+		<mapper resource="mybatis/composite.xml"/>
+		<mapper resource="mybatis/shopbox.xml"/>
+		<mapper resource="mybatis/userlist.xml"/>
+		<mapper resource="mybatis/notice.xml"/>
+		<mapper resource="mybatis/benlist.xml"/>
+		<mapper resource="mybatis/board.xml"/>
+	</mappers>
+</configuration>
+
+
+
+
+
+
+

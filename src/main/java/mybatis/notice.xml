@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mybatis/notice.xml -->
+
+<mapper namespace="notice.NoticeBean">
+
+	<select id="GetTotalCount" resultType="int">
+		select count(*) from notice
+		<if test="whatColumn == 'writer'">
+			where writer like #{keyword}
+		</if>
+		<if test="whatColumn == 'content'">
+			where contents like #{keyword}
+		</if>
+		order by num desc
+	</select>
+	
+	<select id="GetNoticeList" resultType="notice.model.NoticeBean">
+			select * from notice
+		<if test="whatColumn=='writer'">
+			where writer like #{keyword}
+		</if>
+		<if test="whatColumn=='content'">
+			where contents like #{keyword}
+		</if>
+		 order by ref desc, restep asc 
+	</select>
+ 
+	<insert id="InsertNotice">
+		insert into notice(num, writer, subject,image, content, regdate,readcount,ref,restep,relevel)
+		values(noticeseq.nextval, #{writer}, #{subject}, #{image}, #{content}, sysdate, #{readcount},noticeseq.currval,0,0) 
+	</insert> 
+ 	
+	<delete id="DeleteNotice">
+		delete from notice where num=#{num}
+	</delete> 
+ 	
+	<select id="GetNotice" resultType="notice.model.NoticeBean">
+		select * from notice where num=#{num}
+	</select>
+	
+	<update id="UpdateNotice">
+		update notice set
+		writer=#{writer},subject=#{subject},content=#{content} where num=#{num}
+	</update>
+
+	<select id="GetNoticenv" resultType="notice.model.NoticeBean">
+		select * from notice where num=#{num}
+	</select> 
+	
+	<update id="AddReadCount">
+		update notice set readcount = readcount+1 where num=#{num} 
+	</update>
+	
+	<update id="ReplyNotice1">
+		update notice set restep = restep+1 where ref=#{ref} and restep>#{restep}
+	</update>
+
+	<insert id="ReplyNotice2">						
+		insert into notice(num, subject, writer, image, content, regdate, readcount, ref, restep, relevel)
+		values(noticeseq.nextval, #{subject}, #{writer}, #{image}, #{content}, sysdate, #{readcount},#{ref},#{restep}+1,#{relevel}+1) 
+	</insert> 
+
+</mapper>

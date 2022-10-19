@@ -1,0 +1,75 @@
+section {padding: 60px 0;}
+section a {text-decoration: none;color: inherit;transition:all 0.3s}
+section a:hover {color: #121212;}
+section .container {max-width: 1400px;width: 100%;margin-left: auto;margin-right: auto;}
+
+section h1, section h2, section h3, section h4, section h5, section h6 {margin-top: 0;margin-bottom: 0;}
+
+
+/* member====================================== */
+	/* input style */
+	.shop_member input, .shop_member input[type="text"], .shop_member input[type="password"], .shop_member input[type="email"], .shop_member input[type="file"], .shop_member select, .shop_member select option, .shop_member textarea {
+		width:100%;
+		padding:5px;
+		line-height:1.5;
+		background-color: #f5f5f5;
+		border:1px solid #ddd;
+		border-radius:0px;
+		-webkit-transition:0.35s ease-in-out;
+		-moz-transition:0.35s ease-in-out;
+		-o-transition:0.35s ease-in-out;
+		transition:0.35s ease-in-out;
+		transition:all 0.35s ease-in-out;
+	}
+	.shop_member input:-moz-read-only {color: #888;}  /* Firefox */
+	.shop_member input:read-only {color: #888;}
+
+	.shop_member input:visited, .shop_member input:link, .shop_member input:active, .shop_member input:focus, .shop_member textarea:visited, .shop_member textarea:link, .shop_member textarea:active, .shop_member textarea:focus, .shop_member select:visited, .shop_member select:link, .shop_member select:active, .shop_member select:focus {
+		outline:1px solid #ccc;
+	}
+	.shop_member input[type=file]::-webkit-file-upload-button {
+		appearance:none;
+		-webkit-appearance:none;
+		-moz-appearance:none;
+		box-sizing:border-box;
+		border:1px solid #ccc;
+		background:#eee;
+
+	}
+	.shop_member input[type=file]::-ms-value {border:1px solid #e5e5e5;background:#f5f5f5;}
+	.shop_member input[type=file]::-ms-browse {border:1px solid #e5e5e5;background:#f5f5f5;}
+
+	.shop_member input[type="checkbox"] {width: 20px;height: 20px;margin-right: 5px;}
+	.shop_member input[type="checkbox"] + .wp_d_input_title {display: inline;vertical-align: top;width: calc(100% - 45px);margin-right: 20px;word-break:keep-all;}
+	.shop_member .checkbox_wrap {font-size: 0;}
+	.shop_member .checkbox_wrap .checkbox_frame {display: inline-block;margin-bottom: 0px;}
+
+	.shop_member input[type="radio"] {width: 20px;height: 20px;margin-right: 5px;}
+	.shop_member input[type="radio"] + .wp_d_input_title {display: inline;vertical-align: top;width: calc(100% - 45px);margin-right: 20px;word-break:keep-all;}
+	.shop_member .radio_wrap {font-size: 0;}
+	.shop_member .radio_wrap .radio_frame {display: inline-block;margin-bottom: 0px;}
+	.shop_member textarea {
+		width: 100%;
+		outline:none;
+		margin-bottom: 0px;
+		border: 1px solid #e5e5e5;
+		border-radius: 3px;
+		-webkit-transition:0s ease-in-out;
+		-moz-transition:0s ease-in-out;
+		-o-transition:0s ease-in-out;
+		transition:0s ease-in-out;
+		transition:all 0s ease-in-out;
+	}
+
+
+	/* login style */
+	.shop_member .login_box {padding: 40px 40px 60px;max-width: 550px;margin: 40px auto;border: 1px solid #cacaca;}
+	.shop_member .login_box h3 { font-size: 22px; padding: 20px 0 30px; font-weight: bold; }
+	.shop_member .shop_input_wrap {padding: 0 -15px;}
+
+	.shop_member .btn_wrap {width: 100%;color: #aaa;font-size: 13px;margin: 10px auto;text-align: center;}
+	.shop_member .btn_wrap a {display: inline-block;}
+	.shop_member .btn_wrap a+a:before {content:"";border-left: 1px solid #ddd;margin-right: 5px;}
+
+	.shop_member .login_btn {display: inline-block;text-align: center;margin: 15px 0;padding: 10px;width: 100%;background-color: #121212;color: #fff;font-size: 15px;}
+	.shop_member .login_btn:hover {background-color: #666;color: #fff;}

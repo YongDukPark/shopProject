@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="shop.cmunity">
+	
+	<insert id="insert">
+		insert into cmunity (num,id,img,subject,gender,content,ip,pname,category,price,stock,poption) values 
+		(cmunityseq.nextval,#{id},#{img},#{subject},#{gender},#{content},#{ip},#{pname},#{category},#{price},#{stock},#{poption})
+	</insert>
+	
+	<select id="getInsertNumber" resultType="String">
+		select num from cmunity where regdate = (select max(regdate) from cmunity)
+	</select>
+	
+	<insert id="InsertProduct">
+		insert into bplist(num, id, content, img, ip, pname, gender, category, price, stock, poption)
+		values(#{num}, #{id, jdbcType=VARCHAR}, #{content, jdbcType=VARCHAR}, #{img}, #{ip, jdbcType=VARCHAR}, #{pname}, #{gender, jdbcType=VARCHAR}, #{category}, #{price}, #{stock}, #{poption})
+	</insert>
+	
+	
+	
+	<update id="changeUpdate">
+		update cmunity set img=#{img},subject=#{subject},gender=#{gender},content=#{content},pname=#{pname},category=#{category},price=#{price},stock=#{stock},poption=#{poption} 
+		where num = #{num} 
+	</update>
+	
+	<update id="update">
+		update cmunity set img=#{img},subject=#{subject},gender=#{gender},content=#{content},pname=#{pname},category=#{category},price=#{price},stock=#{stock},poption=#{poption} 
+		where num = #{num} 
+	</update>
+	
+	<select id="getImgName" resultType="String">
+		select img from cmunity where num = #{num}
+	</select>
+	
+	
+	<!-- main getMainLike -->
+	<select id="getMainLike" resultType="cmunity.model.cmunityBean">
+		select * from cmunity where likecount > 9 order by likecount
+	</select>
+	<!-- main getMainGirl -->
+	<select id="getMainGirl" resultType="cmunity.model.cmunityBean">
+		select * from cmunity where gender = '여성' and readcount > 20 order by readcount
+	</select>
+	<!-- main getMainMen -->
+	<select id="getMainMen" resultType="cmunity.model.cmunityBean">
+		select * from cmunity where gender = '남성' and readcount > 20 order by readcount
+	</select>
+	
+	
+	
+	
+	<!-- totalcount 자유게시판용 -->
+	<select id="getTotalCount" resultType="int">
+		select count(*) from cmunity
+			<if test="whatColumn == 'pname'">
+				where pname like #{keyword}
+			</if>
+			<if test="whatColumn == 'category'">
+				where category like #{keyword}
+			</if>
+		order by num desc
+	</select>
+	
+	<!-- lists 자유게시판용-->
+	<select id="getLists" resultType="cmunity.model.cmunityBean">
+		select * from cmunity
+			<if test="whatColumn == 'pname'">
+				where pname like #{keyword}
+			</if>
+			<if test="whatColumn == 'category'">
+				where category like #{keyword}
+			</if>
+		order by num desc
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- detailView -->
+	<select id="detailView" resultType="cmunity.model.cmunityBean">
+		select * from cmunity where num=#{num}
+	</select>
+	
+	<!-- upReadCount -->
+	<update id="upReadCount">
+		update cmunity set readcount = readcount + 1 where num=#{num}
+	</update>
+
+	<!-- uplikecount -->	
+	<update id="lCount">
+		update cmunity set likecount = likecount+1 where num=#{num}
+	</update>
+	
+	<!--  -->
+	<delete id="deleteByNum">
+		delete cmunity where num=#{num}
+	</delete>
+	
+	
+	
+	
+	
+	
+	<!--상세보기에 해당하는 상품에 대한 댓글 보기   -->
+	<select id="replylistCmu" resultType="cmunity.model.BpreplyBeanCmu">
+		select * from bpreply where num=#{num} and type='cmu' order by replenum		
+	</select>
+	<!--해당 상품의 댓글 작성  -->
+	<insert id="insertreplyCmu">
+		insert into bpreply(replenum, num,content,img,id,type)
+		values(bpreplyseq.nextval, #{num},#{content, jdbcType=VARCHAR},#{img, jdbcType=VARCHAR},#{id},'cmu')
+	</insert>
+	<!--댓글삭제  -->
+	<delete id="deletereplyCmu">
+		delete from bpreply where replenum=#{replenum}
+	</delete>
+	<!--댓글 수정폼  -->
+	<select id="selectreplyCmu" resultType="cmunity.model.BpreplyBeanCmu">
+		select * from bpreply where replenum=#{replenum}
+		<!--댓글수정  -->
+	</select>
+		<update id="updatereplyCmu">
+		update bpreply set 
+		content=#{content, jdbcType=VARCHAR},img=#{img, jdbcType=VARCHAR}
+		where replenum=#{replenum}
+	</update>
+	
+	
+	
+	
+</mapper>

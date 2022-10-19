@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board.model.Board">
+	<select id="GetArticleCount" resultType="int">
+		SELECT COUNT(*) as cnt FROM board
+		<if test="whatColumn=='subject'">where subject like #{keyword}</if>
+		<if test="whatColumn=='writer'">where writer like #{keyword}</if>
+	</select>
+	<select id="GetArticleList" resultType="board.model.BoardBean">
+		select num, writer, email, subject, passwd, reg_date, readcount, ref, re_step, re_level, content, ip 		        
+		from (select rownum as rank, num, writer, email, subject, passwd, reg_date, readcount, ref, re_step, re_level, content, ip
+		from (select num, writer, email, subject, passwd, reg_date, readcount, ref, re_step, re_level, content, ip
+		from board
+		order by ref desc, re_step asc ))
+		<if test="whatColumn=='subject'">where subject like #{keyword}</if>
+		<if test="whatColumn=='writer'">where writer like #{keyword}</if>
+	</select>
+	<insert id="InsertBoard">
+	insert into board(num,writer,email,subject,passwd,reg_date,readcount,ref,re_step,re_level,content,ip) 
+	values(board_seq.nextval,#{writer},#{email},#{subject},#{passwd},#{reg_date},#{readcount},board_seq.currval,0,0,#{content},#{ip})
+	</insert>
+	<update id="ReplyArticle1">
+	update board set re_step=re_step+1 where ref=#{ref} and re_step>#{re_step}
+	</update>
+	<insert id="ReplyArticle2">
+	insert into board(num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip) 
+	values(board_seq.nextval,#{writer},#{email},#{subject},#{passwd},#{reg_date},#{ref},#{re_step},#{re_level},#{content},#{ip})
+	</insert>
+	<update id="AddReadCount">
+	update board set readcount=readcount+1 where num=#{num}
+	</update>
+	<select id="GetArticle" resultType="board.model.BoardBean">
+	select * from board where num=#{num}
+	</select>
+	<select id="SelectPW" resultType="String">
+	select passwd from board where num=#{num}
+	</select>
+	<delete id="DeleteArticle">
+	delete from board where num=#{num}
+	</delete>
+	<insert id="UpdateArticle">
+	update board set subject=#{subject},writer=#{writer},email=#{email},content=#{content} where num=#{num}
+	</insert>
+</mapper>
